@@ -343,18 +343,6 @@ buildlog_start() {
 	echo "Host OSVERSION: ${HOST_OSVERSION}"
 	echo "Jail OSVERSION: ${JAIL_OSVERSION}"
 	echo
-	if [ ${JAIL_OSVERSION} -gt ${HOST_OSVERSION} ]; then
-		echo
-		echo
-		echo
-		echo "!!! Jail is newer than host. (Jail: ${JAIL_OSVERSION}, Host: ${HOST_OSVERSION}) !!!"
-		echo "!!! This is not supported. !!!"
-		echo "!!! Host kernel must be same or newer than jail. !!!"
-		echo "!!! Expect build failures. !!!"
-		echo
-		echo
-		echo
-	fi
 	echo "---Begin Environment---"
 	injail env ${PKGENV} ${PORT_FLAGS}
 	echo "---End Environment---"
@@ -1319,14 +1307,6 @@ jail_start() {
 	echo " done"
 
 	JAIL_OSVERSION=$(awk '/\#define __FreeBSD_version/ { print $3 }' "${mnt}/usr/include/sys/param.h")
-
-	if [ ${JAIL_OSVERSION} -gt ${HOST_OSVERSION} ]; then
-		warn "!!! Jail is newer than host. (Jail: ${JAIL_OSVERSION}, Host: ${HOST_OSVERSION}) !!!"
-		warn "This is not supported."
-		warn "Host kernel must be same or newer than jail."
-		warn "Expect build failures."
-		sleep 5
-	fi
 
 	msg "Mounting system devices for ${MASTERNAME}"
 	do_jail_mounts ${tomnt} ${arch}
